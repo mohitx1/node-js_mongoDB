@@ -88,4 +88,25 @@ router.put('/:id',async(req,res)=>{
     }
 })
 
+router.delete('/:id',async(req,res)=>{
+    try{
+        const personId = req.params.id; //Extract the id from the URL parameter
+
+        //If id is correct so data will be updated
+        const response = await person.findByIdAndDelete(personId);
+
+        //If id is incorrect it will get no response and throw an error
+        if(!response){
+            return res.status(404).json({error: 'Person not found'})
+        }
+
+        console.log('Person data Deleted');
+        res.status(200).json({ message: 'Person data deleted', data: response });
+
+    }catch(error){
+        console.error('Error saving person:', error);
+        res.status(500).json({ error: 'Internal server error' }); 
+    }
+})
+
 module.exports = router;
