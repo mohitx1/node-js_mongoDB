@@ -4,7 +4,7 @@ const dotenv = require('dotenv');
 
 
 //database connection
-const db_connection = require('./db')
+const db_connection = require('./util/db')
 db_connection()
 
 // get config vars
