@@ -16,10 +16,8 @@ app.use(bodyParser.json());
 
 //import models
 const person = require('./models/person');
+const menuItems = require('./models/menu')
 
-app.get('/',(req,res)=>{
-    res.send(`Welcome to my hotel... How can ihelp you?`)
-});
 
 // app.post('/person', (req, res) => {
 //     const data = req.body; // Assuming the request body contains the person data
@@ -59,6 +57,52 @@ app.get('/person',async(req,res) => {
         console.log('Data fetched succefully');
         res.status(200).json(data)
     } catch (error){
+        console.error('Error saving person:', error);
+        res.status(500).json({ error: 'Internal server error' }); 
+    }
+})
+
+
+app.post('/menu', async (req, res) => {
+    try {
+        const data = req.body; // Assuming the request body contains the person data
+
+        const newMenuItems = new menuItems(data);
+        
+        const savedItems = await newMenuItems.save();
+
+        console.log('Data saved successfully');
+        res.status(200).json({ savedItems });
+    } catch (error) {
+        console.error('Error saving person:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+app.get('/menu',async(req,res) => {
+    try {
+        const data = await menuItems.find();
+        console.log('Data fetched succefully');
+        res.status(200).json(data)
+    } catch (error){
+        console.error('Error saving person:', error);
+        res.status(500).json({ error: 'Internal server error' }); 
+    }
+});
+
+app.get('/person/:workType', async(req,res)=>{
+    try{
+        const workType = req.params.workType;
+        if(workType == 'chef' || workType == 'manager' || workType == 'waiter'){
+
+            const response = await person.find({work: workType});
+            console.log('response fetched');
+            res.status(200).json(response);
+        }else{
+            console.log('Invalid work type')
+            res.status(404).json({ error : 'Invalid work type'});
+        }
+    }catch(error){
         console.error('Error saving person:', error);
         res.status(500).json({ error: 'Internal server error' }); 
     }
